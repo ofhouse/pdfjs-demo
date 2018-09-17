@@ -8,6 +8,7 @@
 
 import * as React from 'react';
 import pdfjsLib from 'pdfjs-dist';
+import { PDFViewer } from 'pdfjs-dist/lib/web/pdf_viewer';
 
 import { withPdfJsContext } from './react-pdfjs';
 
@@ -22,37 +23,56 @@ type Props = {
 //   '../../build/webpack/pdf.worker.bundle.js';
 
 class Viewer extends React.Component<Props> {
+  // Typings
+  pdfViewer: PDFViewer;
+
+  container = React.createRef();
+  viewer = React.createRef();
+
   viewerCanvas = React.createRef();
 
-  componentDidMount() {
-    console.log(this.props);
+  initialize() {
+    const viewerOptions = {
+      container: this.container.current,
+      viewer: this.viewer.current,
+    };
 
-    // Loading a document.
-    var loadingTask = pdfjsLib.getDocument(this.props.reactPdfjs.file);
+    this.pdfViewer = new PDFViewer(viewerOptions);
+  }
+
+  componentDidMount() {
+    // Initialize the viewer
+    this.initialize();
+
+    // Load the file into the viewer
+    const loadingTask = pdfjsLib.getDocument(this.props.reactPdfjs.file);
     loadingTask.promise
       .then(pdfDocument => {
-        // Request a first page
-        return pdfDocument.getPage(1).then(pdfPage => {
-          // Display page on the existing canvas with 100% scale.
-          var viewport = pdfPage.getViewport(1.0);
-          var canvas = this.viewerCanvas.current;
-          canvas.width = viewport.width;
-          canvas.height = viewport.height;
-          var ctx = canvas.getContext('2d');
-          var renderTask = pdfPage.render({
-            canvasContext: ctx,
-            viewport: viewport,
-          });
-          return renderTask.promise;
-        });
+        this.pdfViewer.setDocument(pdfDocument);
       })
-      .catch(reason => {
-        console.error('Error: ' + reason);
+      .catch(err => {
+        // TODO: Error handling
+        console.log(err);
       });
   }
 
   render() {
-    return <canvas ref={this.viewerCanvas} style={{ flex: 1 }} />;
+    return (
+      <div
+        ref={this.container}
+        style={{
+          position: 'absolute',
+          top: 0,
+          right: 0,
+          bottom: 0,
+          left: 0,
+          height: '100%',
+          overflow: 'auto',
+        }}
+      >
+        <div ref={this.viewer} className="pdfViewer" />
+      </div>
+    );
   }
 }
 

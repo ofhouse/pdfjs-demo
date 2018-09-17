@@ -12,12 +12,20 @@ const Wrapper = styled.div`
   display: flex;
 `;
 
+const ViewerContainer = styled.div`
+  flex: 1;
+  position: relative;
+  background-color: #333;
+`;
+
 class App extends React.Component {
   render() {
     return (
       <Wrapper>
         <PDFJS file={pathToPdf}>
-          <Viewer />
+          <ViewerContainer>
+            <Viewer />
+          </ViewerContainer>
         </PDFJS>
       </Wrapper>
     );
