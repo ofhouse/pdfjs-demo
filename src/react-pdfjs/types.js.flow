@@ -1,0 +1,7 @@
+// @flow
+
+export type ReactContext = {
+  reactPdfjs: {
+    file: string,
+  },
+};

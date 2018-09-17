@@ -1,49 +1,25 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
-import pdfjsLib from 'pdfjs-dist';
+import * as React from 'react';
+import styled from 'styled-components';
 
-// var pdfjsLib = require('pdfjs-dist');
+import './app.css';
 
-var pdfPath = './helloworld.pdf';
+import PDFJS, { Viewer } from './react-pdfjs';
 
-// Setting worker path to worker bundle.
-// pdfjsLib.GlobalWorkerOptions.workerSrc =
-//   '../../build/webpack/pdf.worker.bundle.js';
+const pathToPdf = './helloworld.pdf';
 
-class App extends Component {
-  pdfCanvas = React.createRef();
+const Wrapper = styled.div`
+  flex: 1;
+  display: flex;
+`;
 
-  componentDidMount() {
-    // Loading a document.
-    var loadingTask = pdfjsLib.getDocument(pdfPath);
-    loadingTask.promise
-      .then(pdfDocument => {
-        // Request a first page
-        return pdfDocument.getPage(1).then(pdfPage => {
-          // Display page on the existing canvas with 100% scale.
-          var viewport = pdfPage.getViewport(1.0);
-          var canvas = this.pdfCanvas.current;
-          canvas.width = viewport.width;
-          canvas.height = viewport.height;
-          var ctx = canvas.getContext('2d');
-          var renderTask = pdfPage.render({
-            canvasContext: ctx,
-            viewport: viewport,
-          });
-          return renderTask.promise;
-        });
-      })
-      .catch(reason => {
-        console.error('Error: ' + reason);
-      });
-  }
-
+class App extends React.Component {
   render() {
     return (
-      <div className="App">
-        <canvas ref={this.pdfCanvas} />
-      </div>
+      <Wrapper>
+        <PDFJS file={pathToPdf}>
+          <Viewer />
+        </PDFJS>
+      </Wrapper>
     );
   }
 }
