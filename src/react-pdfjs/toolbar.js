@@ -22,6 +22,7 @@ class Toolbar extends React.Component<Props> {
     const renderProps: RenderProps = {
       zoomIn: reactPdfjs.zoomIn,
       zoomOut: reactPdfjs.zoomOut,
+      scrollToPage: reactPdfjs.scrollToPage,
     };
 
     if (this.props.render) {

@@ -50,6 +50,14 @@ class ReactPdfjs extends React.Component<Props, State> {
     });
   };
 
+  scrollToPage = (pageNumber: number) => {
+    const params = {
+      pageNumber,
+    };
+
+    this.updateViewerState('currentPage', params);
+  };
+
   zoomIn = (ticks: number = 0) => {
     let newScale = this.state.context.viewerContext.currentScaleValue;
     do {
@@ -77,10 +85,12 @@ class ReactPdfjs extends React.Component<Props, State> {
       viewerContext: {
         file: this.props.file,
         currentScaleValue: 1.0,
+        currentPage: {},
       },
       toolbarContext: {
         zoomIn: this.zoomIn,
         zoomOut: this.zoomOut,
+        scrollToPage: this.scrollToPage,
       },
     },
   };

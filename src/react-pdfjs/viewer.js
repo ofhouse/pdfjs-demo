@@ -22,6 +22,10 @@ type Props = {
 // pdfjsLib.GlobalWorkerOptions.workerSrc =
 //   '../../build/webpack/pdf.worker.bundle.js';
 
+function isObjectEqual(obj1, obj2) {
+  return JSON.stringify(obj1) === JSON.stringify(obj2);
+}
+
 class Viewer extends React.Component<Props> {
   // Typings
   pdfViewer: PDFViewer;
@@ -59,6 +63,11 @@ class Viewer extends React.Component<Props> {
   shouldComponentUpdate(nextProps) {
     // To updates on the pdfViewer
     this.pdfViewer.currentScaleValue = nextProps.reactPdfjs.currentScaleValue;
+
+    // Check if current page is changed
+    if (!isObjectEqual(this.props.reactPdfjs.currentPage, nextProps.reactPdfjs.currentPage)) {
+      this.pdfViewer.scrollPageIntoView(nextProps.reactPdfjs.currentPage);
+    }
 
     // Prevent rerender of the canvas
     return false;

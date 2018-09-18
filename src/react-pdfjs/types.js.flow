@@ -3,11 +3,17 @@
 export type ToolbarContext = {
   zoomIn: (tick?: number) => any,
   zoomOut: (tick?: number) => any,
+  scrollToPage: (pageNumber: number) => any,
 };
 
 export type ViewerContext = {
   file: string,
   currentScaleValue: number,
+  currentPage: {
+    pageNumber?: number,
+    destArray?: Array<any>,
+    allowNegativeOffset?: boolean,
+  },
 };
 
 export type ReactContext = {
