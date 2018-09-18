@@ -12,10 +12,10 @@ import { PDFViewer } from 'pdfjs-dist/lib/web/pdf_viewer';
 
 import { withPdfJsContext } from './react-pdfjs';
 
-import type { ReactContext } from './types';
+import type { ViewerContext } from './types';
 
 type Props = {
-  reactPdfjs: ReactContext,
+  reactPdfjs: ViewerContext,
 };
 
 // Setting worker path to worker bundle.
@@ -56,6 +56,14 @@ class Viewer extends React.Component<Props> {
       });
   }
 
+  shouldComponentUpdate(nextProps) {
+    // To updates on the pdfViewer
+    this.pdfViewer.currentScaleValue = nextProps.reactPdfjs.currentScaleValue;
+
+    // Prevent rerender of the canvas
+    return false;
+  }
+
   render() {
     return (
       <div
@@ -76,6 +84,6 @@ class Viewer extends React.Component<Props> {
   }
 }
 
-const ConnectedViewer = withPdfJsContext(Viewer);
+const ConnectedViewer = withPdfJsContext(Viewer, 'viewerContext');
 
 export { ConnectedViewer as Viewer };

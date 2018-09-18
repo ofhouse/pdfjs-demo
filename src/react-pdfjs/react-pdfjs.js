@@ -7,12 +7,21 @@ import * as React from 'react';
 
 import type { ReactContext } from './types';
 
-const PdfjsContext = React.createContext('light');
-const withPdfJsContext = (Component: React.Component) => (props: any) => (
+const PdfjsContext = React.createContext({});
+const withPdfJsContext = (
+  Component: React.ComponentType<any>,
+  contextType: string = 'toolbarContext'
+) => (props: any) => (
   <PdfjsContext.Consumer>
-    {(context: ReactContext) => <Component {...props} reactPdfjs={context} />}
+    {(context: ReactContext) => <Component {...props} reactPdfjs={context[contextType]} />}
   </PdfjsContext.Consumer>
 );
+
+// Constants
+const DEFAULT_SCALE_DELTA = 1.1;
+
+const MIN_SCALE = 0.1;
+const MAX_SCALE = 10.0;
 
 type Props = {
   file: string,
@@ -24,9 +33,55 @@ type State = {
 };
 
 class ReactPdfjs extends React.Component<Props, State> {
+  updateViewerState = (key: string, value: any) => {
+    this.setState(prevState => {
+      const newState = {
+        ...prevState,
+        context: {
+          ...prevState.context,
+          viewerContext: {
+            ...prevState.context.viewerContext,
+            [key]: value,
+          },
+        },
+      };
+
+      return newState;
+    });
+  };
+
+  zoomIn = (ticks: number = 0) => {
+    let newScale = this.state.context.viewerContext.currentScaleValue;
+    do {
+      newScale = parseFloat((newScale * DEFAULT_SCALE_DELTA).toFixed(2));
+      newScale = Math.ceil(newScale * 10) / 10;
+      newScale = Math.min(MAX_SCALE, newScale);
+    } while (--ticks > 0 && newScale < MAX_SCALE);
+
+    this.updateViewerState('currentScaleValue', newScale);
+  };
+
+  zoomOut = (ticks: number = 0) => {
+    let newScale = this.state.context.viewerContext.currentScaleValue;
+    do {
+      newScale = parseFloat((newScale / DEFAULT_SCALE_DELTA).toFixed(2));
+      newScale = Math.floor(newScale * 10) / 10;
+      newScale = Math.max(MIN_SCALE, newScale);
+    } while (--ticks > 0 && newScale > MIN_SCALE);
+
+    this.updateViewerState('currentScaleValue', newScale);
+  };
+
   state = {
     context: {
-      file: this.props.file,
+      viewerContext: {
+        file: this.props.file,
+        currentScaleValue: 1.0,
+      },
+      toolbarContext: {
+        zoomIn: this.zoomIn,
+        zoomOut: this.zoomOut,
+      },
     },
   };
 

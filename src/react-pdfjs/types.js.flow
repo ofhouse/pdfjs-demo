@@ -1,7 +1,21 @@
 // @flow
 
+export type ToolbarContext = {
+  zoomIn: (tick?: number) => any,
+  zoomOut: (tick?: number) => any,
+};
+
+export type ViewerContext = {
+  file: string,
+  currentScaleValue: number,
+};
+
 export type ReactContext = {
-  reactPdfjs: {
-    file: string,
-  },
+  viewerContext: ViewerContext,
+
+  toolbarContext: ToolbarContext,
+};
+
+export type ReactContextToolbar = {
+  reactPdfjs: ToolbarContext,
 };

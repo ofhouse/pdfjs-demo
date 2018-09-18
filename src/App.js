@@ -4,12 +4,14 @@ import styled from 'styled-components';
 import './app.css';
 
 import PDFJS, { Viewer } from './react-pdfjs';
+import PdfToolbar from './components/pdf-toolbar';
 
-const pathToPdf = './helloworld.pdf';
+const pathToPdf = './test.pdf';
 
 const Wrapper = styled.div`
   flex: 1;
   display: flex;
+  flex-direction: column;
 `;
 
 const ViewerContainer = styled.div`
@@ -23,6 +25,7 @@ class App extends React.Component {
     return (
       <Wrapper>
         <PDFJS file={pathToPdf}>
+          <PdfToolbar />
           <ViewerContainer>
             <Viewer />
           </ViewerContainer>
