@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import styled from 'styled-components';
-import { Toolbar } from '../../react-pdfjs';
+import { Toolbar } from '@fwh/react-pdfjs';
 
 const Bar = styled.div`
   height: 40px;

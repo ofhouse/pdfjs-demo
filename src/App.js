@@ -1,9 +1,10 @@
 import * as React from 'react';
 import styled from 'styled-components';
+import PDFJS, { Viewer } from '@fwh/react-pdfjs';
 
+import '@fwh/react-pdfjs/dist/index.css';
 import './app.css';
 
-import PDFJS, { Viewer } from './react-pdfjs';
 import PdfToolbar from './components/pdf-toolbar';
 
 const pathToPdf = './test.pdf';
@@ -21,10 +22,24 @@ const ViewerContainer = styled.div`
 `;
 
 class App extends React.Component {
+  annotationsForPage = async () => {
+    return [
+      {
+        offsetX: 50,
+        offsetY: 50,
+        width: 10,
+        height: 10,
+        backgroundColor: 'rgba(223, 0, 174, 0.12)',
+        borderWidth: '2px',
+        borderColor: '#DF00AE',
+      },
+    ];
+  };
+
   render() {
     return (
       <Wrapper>
-        <PDFJS file={pathToPdf}>
+        <PDFJS file={pathToPdf} annotationsForPage={this.annotationsForPage}>
           <PdfToolbar />
           <ViewerContainer>
             <Viewer />
